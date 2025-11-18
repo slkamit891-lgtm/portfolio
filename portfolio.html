@@ -1,0 +1,374 @@
+<!--
+Project: Personal Portfolio Website + Admin Panel
+Stack: HTML, CSS, JavaScript (no backend). Data persisted using localStorage.
+Folder structure (single-page files provided below):
+
+project-root/
+  ├─ index.html         -> Public portfolio
+  ├─ admin.html         -> Admin panel (protected by a simple password)
+  ├─ css/
+  │   └─ style.css
+  ├─ js/
+  │   ├─ main.js        -> portfolio display logic
+  │   └─ admin.js       -> admin panel logic
+  └─ README.md         -> Instructions (publishing on GitHub Pages)
+
+How it works:
+- Admin logs in with a password (default: "admin123"). Change it in the admin.js if you like.
+- Admin can add/edit/delete: Projects, Skills, Testimonials, and Basic Profile info.
+- All data is stored in localStorage under "myPortfolioData".
+- index.html reads that data and renders the portfolio dynamically.
+
+You can copy the three files into the folder structure above and deploy to GitHub Pages.
+-->
+
+<!-- ======================= index.html ======================= -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Portfolio</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1 id="name">Your Name</h1>
+      <p id="tagline">Web Developer | Designer | Problem Solver</p>
+      <nav>
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="admin.html" class="admin-link">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="about" class="card">
+      <h2>About Me</h2>
+      <p id="aboutText">Short bio goes here.</p>
+    </section>
+
+    <section id="projects" class="card">
+      <h2>Projects</h2>
+      <div id="projectsList" class="grid"></div>
+    </section>
+
+    <section id="skills" class="card">
+      <h2>Skills</h2>
+      <div id="skillsList" class="chips"></div>
+    </section>
+
+    <section id="testimonials" class="card">
+      <h2>Testimonials</h2>
+      <div id="testimonialsList"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p id="footerText">© <span id="year"></span> Your Name</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
+
+
+<!-- ======================= admin.html ======================= -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Panel - Portfolio</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header small">
+    <div class="container">
+      <h1>Admin Panel</h1>
+      <a href="index.html">View Site</a>
+    </div>
+  </header>
+
+  <main class="container admin">
+    <div id="loginBox" class="card">
+      <h2>Login</h2>
+      <input id="password" type="password" placeholder="Enter admin password" />
+      <button id="loginBtn">Login</button>
+      <p id="loginMsg" class="muted"></p>
+    </div>
+
+    <div id="adminArea" style="display:none">
+      <section class="card">
+        <h2>Profile</h2>
+        <input id="inputName" placeholder="Your name" />
+        <input id="inputTagline" placeholder="Short tagline" />
+        <textarea id="inputAbout" placeholder="Short bio"></textarea>
+        <button id="saveProfile">Save Profile</button>
+      </section>
+
+      <section class="card">
+        <h2>Projects</h2>
+        <input id="projTitle" placeholder="Project title" />
+        <input id="projLink" placeholder="Project link (optional)" />
+        <textarea id="projDesc" placeholder="Short description"></textarea>
+        <button id="addProject">Add Project</button>
+        <div id="projectsAdminList"></div>
+      </section>
+
+      <section class="card">
+        <h2>Skills</h2>
+        <input id="skillInput" placeholder="Skill name (e.g. JavaScript)" />
+        <button id="addSkill">Add Skill</button>
+        <div id="skillsAdminList"></div>
+      </section>
+
+      <section class="card">
+        <h2>Testimonials</h2>
+        <input id="testAuthor" placeholder="Author name" />
+        <textarea id="testText" placeholder="Testimonial text"></textarea>
+        <button id="addTestimonial">Add Testimonial</button>
+        <div id="testsAdminList"></div>
+      </section>
+
+      <section class="card small">
+        <h2>Export / Reset</h2>
+        <button id="exportBtn">Export JSON</button>
+        <button id="resetBtn">Reset All Data</button>
+        <p class="muted">Default password: <code>admin123</code>. Change it in admin.js when deploying.</p>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
+
+
+<!-- ======================= css/style.css ======================= -->
+/* Minimal, responsive styling */
+*{box-sizing:border-box}
+body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;margin:0;color:#111;background:#f7f8fb}
+.container{max-width:980px;margin:0 auto;padding:20px}
+.site-header{background:#0b1221;color:#fff;padding:18px 0}
+.site-header.small{padding:10px}
+.site-header .container{display:flex;align-items:center;justify-content:space-between}
+.site-header h1{margin:0;font-size:20px}
+.site-header nav a{color:#fff;margin-left:14px;text-decoration:none}
+.admin-link{background:#fff;color:#0b1221;padding:6px 10px;border-radius:6px}
+.card{background:#fff;padding:18px;border-radius:10px;margin:18px 0;box-shadow:0 6px 18px rgba(8,10,20,0.06)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.project{padding:12px;border:1px solid #e6e9ef;border-radius:8px}
+.project h3{margin:0 0 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:6px 10px;border-radius:999px;background:#eef3ff;border:1px solid #d6e1ff}
+.site-footer{padding:18px 0;text-align:center;color:#6b7280}
+input,textarea,button{display:block;width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #d1d5db}
+button{cursor:pointer;background:#0b1221;color:#fff;border:none}
+.muted{color:#6b7280;font-size:13px}
+.admin .card.small{display:flex;gap:12px;flex-direction:column}
+#projectsAdminList .row,#skillsAdminList .row,#testsAdminList .row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #eee}
+.row button{width:120px;padding:6px}
+@media(max-width:600px){.site-header .container{flex-direction:column;gap:10px}}
+
+
+<!-- ======================= js/main.js ======================= -->
+(function(){
+  const defaultData = {
+    profile: {name:'Your Name', tagline:'Web Developer', about:'A short bio.'},
+    projects: [
+      {id:1,title:'Sample Project',link:'#',desc:'This is a demo project.'}
+    ],
+    skills:['HTML','CSS','JavaScript'],
+    testimonials:[{author:'Prof. X',text:'Great work ethic.'}]
+  };
+
+  function loadData(){
+    const raw = localStorage.getItem('myPortfolioData');
+    if(!raw){ localStorage.setItem('myPortfolioData',JSON.stringify(defaultData)); return defaultData; }
+    try{ return JSON.parse(raw);}catch(e){ localStorage.setItem('myPortfolioData',JSON.stringify(defaultData)); return defaultData }
+  }
+
+  function saveData(data){ localStorage.setItem('myPortfolioData',JSON.stringify(data)) }
+
+  function render(){
+    const data = loadData();
+    document.getElementById('name').textContent = data.profile.name || 'Your Name';
+    document.getElementById('tagline').textContent = data.profile.tagline || '';
+    document.getElementById('aboutText').textContent = data.profile.about || '';
+
+    const projCont = document.getElementById('projectsList'); projCont.innerHTML='';
+    data.projects.slice().reverse().forEach(p=>{
+      const d = document.createElement('div'); d.className='project';
+      const title = document.createElement('h3'); title.textContent = p.title; d.appendChild(title);
+      const desc = document.createElement('p'); desc.textContent = p.desc; d.appendChild(desc);
+      if(p.link){ const a = document.createElement('a'); a.href=p.link; a.textContent='View'; a.target='_blank'; d.appendChild(a) }
+      projCont.appendChild(d);
+    });
+
+    const skillsCont = document.getElementById('skillsList'); skillsCont.innerHTML='';
+    data.skills.forEach(s=>{ const c=document.createElement('span'); c.className='chip'; c.textContent=s; skillsCont.appendChild(c) });
+
+    const tCont = document.getElementById('testimonialsList'); tCont.innerHTML='';
+    data.testimonials.forEach(t=>{ const b=document.createElement('blockquote'); b.innerHTML=`<p>${t.text}</p><footer>— ${t.author}</footer>`; tCont.appendChild(b) });
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  }
+
+  render();
+  window.renderPortfolio = render; // expose for admin to call after changes
+})();
+
+
+<!-- ======================= js/admin.js ======================= -->
+(function(){
+  // Simple client-side admin. Not secure — acceptable for a final-year demo that runs on GitHub Pages.
+  const DEFAULT_PASSWORD = 'admin123'; // change before submitting
+  const storageKey = 'myPortfolioData';
+
+  function loadData(){
+    const raw = localStorage.getItem(storageKey);
+    if(!raw){ const base = {profile:{name:'Your Name',tagline:'Web Developer',about:'A short bio.'},projects:[],skills:[],testimonials:[]}; localStorage.setItem(storageKey,JSON.stringify(base)); return base }
+    try{ return JSON.parse(raw) }catch(e){ const base = {profile:{name:'Your Name',tagline:'Web Developer',about:'A short bio.'},projects:[],skills:[],testimonials:[]}; localStorage.setItem(storageKey,JSON.stringify(base)); return base }
+  }
+  function saveData(d){ localStorage.setItem(storageKey,JSON.stringify(d)); }
+
+  // DOM
+  const loginBox = document.getElementById('loginBox');
+  const adminArea = document.getElementById('adminArea');
+  const loginBtn = document.getElementById('loginBtn');
+  const passwordInput = document.getElementById('password');
+  const loginMsg = document.getElementById('loginMsg');
+
+  const inputName = document.getElementById('inputName');
+  const inputTagline = document.getElementById('inputTagline');
+  const inputAbout = document.getElementById('inputAbout');
+  const saveProfile = document.getElementById('saveProfile');
+
+  const projTitle = document.getElementById('projTitle');
+  const projLink = document.getElementById('projLink');
+  const projDesc = document.getElementById('projDesc');
+  const addProject = document.getElementById('addProject');
+  const projectsAdminList = document.getElementById('projectsAdminList');
+
+  const skillInput = document.getElementById('skillInput');
+  const addSkill = document.getElementById('addSkill');
+  const skillsAdminList = document.getElementById('skillsAdminList');
+
+  const testAuthor = document.getElementById('testAuthor');
+  const testText = document.getElementById('testText');
+  const addTestimonial = document.getElementById('addTestimonial');
+  const testsAdminList = document.getElementById('testsAdminList');
+
+  const exportBtn = document.getElementById('exportBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  // login
+  loginBtn.addEventListener('click',()=>{
+    const val = passwordInput.value || '';
+    if(val === DEFAULT_PASSWORD){ showAdmin(); } else { loginMsg.textContent='Incorrect password'; setTimeout(()=>loginMsg.textContent='','2000') }
+  });
+
+  function showAdmin(){
+    loginBox.style.display='none'; adminArea.style.display='block';
+    populateAdmin();
+  }
+
+  function populateAdmin(){
+    const d = loadData();
+    inputName.value = d.profile.name||'';
+    inputTagline.value = d.profile.tagline||'';
+    inputAbout.value = d.profile.about||'';
+    renderProjects(); renderSkills(); renderTests();
+  }
+
+  saveProfile.addEventListener('click',()=>{
+    const d = loadData(); d.profile.name = inputName.value; d.profile.tagline = inputTagline.value; d.profile.about = inputAbout.value; saveData(d); notify('Profile saved'); window.renderPortfolio && window.renderPortfolio();
+  });
+
+  function renderProjects(){ projectsAdminList.innerHTML=''; const d = loadData(); d.projects.forEach(p=>{
+    const row = document.createElement('div'); row.className='row'; row.innerHTML = `<div><strong>${p.title}</strong><div class="muted">${p.desc}</div></div>`;
+    const btns = document.createElement('div');
+    const del = document.createElement('button'); del.textContent='Delete'; del.addEventListener('click',()=>{ d.projects = d.projects.filter(x=>x.id!==p.id); saveData(d); renderProjects(); window.renderPortfolio && window.renderPortfolio(); });
+    btns.appendChild(del);
+    row.appendChild(btns); projectsAdminList.appendChild(row);
+  }) }
+
+  addProject.addEventListener('click',()=>{
+    const d = loadData();
+    const id = Date.now();
+    if(!projTitle.value) return notify('Title required');
+    d.projects.push({id,title:projTitle.value,link:projLink.value,desc:projDesc.value});
+    saveData(d); projTitle.value='';projLink.value='';projDesc.value=''; renderProjects(); window.renderPortfolio && window.renderPortfolio(); notify('Project added');
+  });
+
+  function renderSkills(){ skillsAdminList.innerHTML=''; const d = loadData(); d.skills.forEach((s,idx)=>{
+    const row = document.createElement('div'); row.className='row'; row.innerHTML = `<div>${s}</div>`;
+    const del = document.createElement('button'); del.textContent='Delete'; del.addEventListener('click',()=>{ d.skills.splice(idx,1); saveData(d); renderSkills(); window.renderPortfolio && window.renderPortfolio(); });
+    row.appendChild(del); skillsAdminList.appendChild(row);
+  }) }
+
+  addSkill.addEventListener('click',()=>{
+    const v = skillInput.value.trim(); if(!v) return; const d = loadData(); d.skills.push(v); saveData(d); skillInput.value=''; renderSkills(); window.renderPortfolio && window.renderPortfolio(); notify('Skill added');
+  });
+
+  function renderTests(){ testsAdminList.innerHTML=''; const d = loadData(); d.testimonials.forEach((t,idx)=>{
+    const row = document.createElement('div'); row.className='row'; row.innerHTML = `<div><strong>${t.author}</strong><div class="muted">${t.text}</div></div>`;
+    const del = document.createElement('button'); del.textContent='Delete'; del.addEventListener('click',()=>{ d.testimonials.splice(idx,1); saveData(d); renderTests(); window.renderPortfolio && window.renderPortfolio(); });
+    row.appendChild(del); testsAdminList.appendChild(row);
+  }) }
+
+  addTestimonial.addEventListener('click',()=>{
+    const a=testAuthor.value.trim(), t=testText.value.trim(); if(!a||!t) return notify('Author and text required'); const d=loadData(); d.testimonials.push({author:a,text:t}); saveData(d); testAuthor.value=''; testText.value=''; renderTests(); window.renderPortfolio && window.renderPortfolio(); notify('Testimonial added');
+  });
+
+  exportBtn.addEventListener('click',()=>{
+    const data = loadData(); const blob = new Blob([JSON.stringify(data, null, 2)],{type:'application/json'}); const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download='portfolio-data.json'; a.click(); URL.revokeObjectURL(url);
+  });
+
+  resetBtn.addEventListener('click',()=>{
+    if(!confirm('Reset all portfolio data? This cannot be undone.')) return; const base = {profile:{name:'Your Name',tagline:'Web Developer',about:'A short bio.'},projects:[],skills:[],testimonials:[]}; saveData(base); populateAdmin(); window.renderPortfolio && window.renderPortfolio(); notify('Data reset');
+  });
+
+  function notify(t){ const m = document.createElement('div'); m.textContent=t; m.style.position='fixed'; m.style.right='20px'; m.style.bottom='20px'; m.style.background='#0b1221'; m.style.color='#fff'; m.style.padding='10px 14px'; m.style.borderRadius='8px'; document.body.appendChild(m); setTimeout(()=>m.remove(),2200) }
+
+})();
+
+
+<!-- ======================= README.md ======================= -->
+# Portfolio Website + Admin Panel (BCA Final Year Project)
+
+## Files
+- `index.html` — Public portfolio that reads data from `localStorage`.
+- `admin.html` — Admin panel to add/edit the portfolio content.
+- `css/style.css` — Stylesheet.
+- `js/main.js` — Renders the portfolio on `index.html`.
+- `js/admin.js` — Admin functionality (simple password protection).
+
+## Run locally
+1. Put files in a folder with the structure at top of this file.
+2. Open `index.html` in your browser.
+3. To manage content, open `admin.html`. Default password: `admin123`.
+
+## How to publish on GitHub Pages
+1. Create a new GitHub repository (e.g. `my-portfolio`).
+2. Commit and push the project files to the repository.
+3. In GitHub, go to `Settings` → `Pages` → Choose branch `main` (or `master`) and root `/` folder, then Save.
+4. After a minute, your site will be available at `https://<your-username>.github.io/<repo-name>/`.
+
+Alternatively, use the `gh` CLI or GitHub Desktop to push the files.
+
+## Notes (important)
+- This project uses `localStorage` and is client-side only — suitable for showcasing front-end skills.
+- Admin password is stored only in this code (client-side). For a secure real-world app, implement server-side auth and a DB.
+- You can customize styles, add images, and expand features (download resume, contact form with Formspree, etc.).
+
+
+<!-- END OF DOCUMENT -->
